@@ -3,29 +3,43 @@ import { ref, createApp, onErrorCaptured} from 'vue'
 //import App from './App.vue'
 //const app = createApp(App)
 
-//string
-const op = ref('')
-//array of each individual character
-const exp = ref([''])
+//expression string that appears on top bar
+const exp = ref('')
+
+//boolean for whether expression is in editable state.
+//if user tries to add a value when false, bar will clear
+const editable = ref(false)
 
 //resets expression
 function reset() {
-  op.value = ('')
+  exp.value = ('')
+  editable.value = true
 }
 
 //adds a character to the expression
 function add(x) {
-  exp.value = op.value.split('')
-  exp.value.push(x)
-  op.value = exp.value.join('')
+  if (editable.value == false) {
+    reset()
+  }
+  exp.value = exp.value.concat(exp.value, x)
 }
 
 //computes expression
+//handles errors that occur (including division by 0)
 function compute() {
-  op.value = eval(op.value).toString()
-  if (op.value == 'Infinity')
-    op.value = 'Error: Divide by zero'
+  try {
+    exp.value = eval(exp.value).toString()
+    if (exp.value == 'Infinity') {
+      throw new Error('Division by zero')
+    }
+  } catch (err) {
+    alert('Error: ' + err)
+    exp.value = 'Error'
+    editable.value = false
+  }
+
 }
+
 </script>
 
 <template>
@@ -33,7 +47,7 @@ function compute() {
     Calculator
   </h1>
   <div>
-    <input v-model="op">
+    <input v-model="exp">
   </div>
   <div>
     <button @click="add('+')">+</button>
