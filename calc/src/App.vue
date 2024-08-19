@@ -21,7 +21,7 @@ function add(x) {
   if (editable.value == false) {
     reset()
   }
-  exp.value = exp.value.concat(exp.value, x)
+  exp.value = exp.value.concat(x)
 }
 
 //computes expression
@@ -33,7 +33,7 @@ function compute() {
       throw new Error('Division by zero')
     }
   } catch (err) {
-    alert('Error: ' + err)
+    alert(err)
     exp.value = 'Error'
     editable.value = false
   }
